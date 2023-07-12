@@ -609,7 +609,7 @@ if __name__ == "__main__":
     ), f"optimizer type should be in {OPTIMIZER.keys()}, but get{args.optimizer_type}"
     assert args.device in ["cpu", "cuda"], "device should be cpu or cuda"
 
-    time_now = datetime.now().__format__("%Y-%m-%d_T%H:%M:%S")
+    time_now = datetime.now().__format__("%Y_%m_%d_T%H_%M_%S")
     args.model_saving, args.log_saving = check_saving_dir_for_model(args, time_now)
     logger = setup_logger(args.log_saving + "_" + time_now, "w")
     logger.info(f"args: {args}")

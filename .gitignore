@@ -3,3 +3,8 @@ modeling/__pycache__/utils.cpython-38.pyc
 
 # Ignore Python compiled files
 *.pyc
+
+# 
+generated_datasets/
+
+dataset_generating_scripts/RawData

@@ -1,0 +1,6 @@
+2023-07-12 22:45:14,015 - args: Namespace(MIT=False, ORT=True, batch_size=128, config_path='configs/AirQuality_BRITS_best.ini', consistency_loss_weight=1.0, dataset_base_dir='generated_datasets', dataset_name='AirQuality_seqlen24_01masked', dataset_path='generated_datasets\\AirQuality_seqlen24_01masked', device='cuda', early_stop_patience=30, epochs=10000, eval_every_n_steps=7, feature_num=132, imputation_loss_weight=1.0, log_saving='NIPS_results\\AirQuality_BRITS_best\\logs', lr=0.00015385579939014617, max_norm=0.0, model_name='AirQuality_BRITS_best', model_saving='NIPS_results\\AirQuality_BRITS_best\\models\\2023_07_12_T22_44_34', model_saving_strategy='best', model_type='BRITS', num_workers=4, optimizer_type='adam', param_searching_mode=False, reconstruction_loss_weight=1.0, result_saving_base_dir='NIPS_results', rnn_hidden_size=1024, seq_len=24, test_mode=False, weight_decay=0.0)
+2023-07-12 22:45:14,017 - Config file path: configs/AirQuality_BRITS_best.ini
+2023-07-12 22:45:14,017 - Model name: AirQuality_BRITS_best
+2023-07-12 22:45:29,134 - Num of total trainable params is: 11250848
+2023-07-12 22:45:40,519 - Creating adam optimizer...
+2023-07-12 22:46:05,069 - Entering training mode...
