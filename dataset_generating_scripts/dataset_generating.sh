@@ -54,3 +54,12 @@ python gene_ETTm1_dataset.py \
   --sliding_len 12 \
   --dataset_name ETTm1_seqlen24_01masked \
   --saving_path ../generated_datasets
+
+# generate Daqing dataset
+python gene_DaQing_dataset.py \
+  --file_path RawData/DaQing/vertical_all_A.csv \
+  --artificial_missing_rate 0.1 \
+  --seq_len 130 \
+  --sliding_len 60 \
+  --dataset_name DaQing_seqlen130_01masked \
+  --saving_path ../generated_datasets
