@@ -4,11 +4,14 @@ modeling/__pycache__/utils.cpython-38.pyc
 # Ignore Python compiled files
 *.pyc
 
-# 
+# Legacy runtime paths
 generated_datasets/
-
-dataset_generating_scripts/RawData
-
+dataset_generating_scripts/RawData/
 NIPS_results/
-
 NIPS_results_test/
+
+# Local workspace runtime data/artifacts
+local_workspace/data/generated_datasets/
+local_workspace/data/RawData/
+local_workspace/artifacts/NIPS_results/
+local_workspace/artifacts/NIPS_results_test/
