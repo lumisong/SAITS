@@ -1,0 +1,8 @@
+Tensor Type,Shape,Code,Values,Description
+2D Tensor (Matrix),"torch.Size([4, 50])","torch.randn(batch_size, feature_dim)","batch_size=4, feature_dim=50",A basic 2D tensor
+3D Tensor (Time Series),"torch.Size([4, 20, 50])","torch.randn(batch_size, seq_len, feature_dim)","batch_size=4, seq_len=20, feature_dim=50",A time series data tensor
+4D Tensor (Image - RGB),"torch.Size([4, 3, 64, 64])","torch.randn(batch_size, channels, height, width)","batch_size=4, channels=3, height=64, width=64",A image (RGB) data tensor
+4D Tensor (CNN Output),"torch.Size([4, 16, 64, 64])","
+conv = nn.Conv2d(in_channels=channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride, padding=padding)
+conv(torch.randn(batch_size, channels, height, width))
+        ","batch_size=4, channels=3, height=64, width=64, out_channels=16, kernel_size=3, stride=1, padding=1",Feature Maps in CNNs

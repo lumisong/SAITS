@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SAITS Oil Report</title>
+<style>
+:root {
+  --bg:#f7f6f2;
+  --card:#fffdfa;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --primary:#0f766e;
+  --good:#15803d;
+  --warn:#d97706;
+  --bad:#b91c1c;
+}
+* { box-sizing:border-box; }
+body { margin:0; color:var(--text); background:linear-gradient(135deg,#fefce8,#eff6ff 60%,#f0fdf4); font-family:"Segoe UI","Microsoft YaHei",sans-serif; }
+.wrap { max-width:1240px; margin:0 auto; padding:24px; }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:flex-end; margin-bottom:18px; }
+h1 { margin:0; font-size:30px; }
+.sub { color:var(--muted); margin-top:6px; }
+.badges { display:flex; gap:8px; flex-wrap:wrap; }
+.badge { border:1px solid #99f6e4; color:#115e59; background:#ecfeff; padding:4px 10px; border-radius:999px; font-size:12px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+.k { color:var(--muted); font-size:12px; }
+.v { font-size:24px; font-weight:700; margin-top:6px; }
+.section { margin-top:16px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; }
+.section h2 { margin:4px 0 12px; font-size:20px; }
+.tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.tab { border:1px solid var(--line); background:#fff; color:var(--text); padding:6px 10px; border-radius:8px; cursor:pointer; font-size:13px; }
+.tab.active { border-color:var(--primary); color:var(--primary); background:#f0fdfa; }
+.dataset-panel { display:none; }
+.dataset-panel.active { display:block; }
+.quick { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-bottom:12px; }
+.quick .q { border:1px solid var(--line); border-radius:10px; padding:10px; background:#fff; }
+.quick .q .t { color:var(--muted); font-size:12px; }
+.quick .q .n { font-weight:700; margin-top:4px; }
+.table-wrap { overflow:auto; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td { border-bottom:1px solid var(--line); padding:8px 6px; text-align:left; white-space:nowrap; }
+th { color:var(--muted); font-weight:600; background:#fafafa; position:sticky; top:0; }
+.rank { font-weight:700; color:#0f766e; }
+.note { color:var(--muted); font-size:12px; margin-top:8px; }
+.bar { position:relative; height:10px; width:120px; background:#eef2f7; border-radius:999px; overflow:hidden; }
+.fill { position:absolute; top:0; left:0; bottom:0; border-radius:999px; }
+.fill.mae { background:linear-gradient(90deg,var(--bad),var(--warn),var(--good)); }
+.fill.time { background:linear-gradient(90deg,var(--bad),var(--warn),var(--good)); }
+.fill.size { background:linear-gradient(90deg,var(--bad),var(--warn),var(--good)); }
+.legend { display:flex; gap:12px; color:var(--muted); font-size:12px; margin-top:6px; }
+.footer { margin-top:14px; color:var(--muted); font-size:12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>SAITS 石油实验报告</h1>
+      <div class="sub">结构：总览 -> 数据集页签 -> 模型对比表 -> 字段说明</div>
+    </div>
+    <div class="badges">
+      <span class="badge">DaQing</span>
+      <span class="badge">NewZealand</span>
+      <span class="badge">NorthSea</span>
+    </div>
+  </header>
+
+  <section class="grid" id="kpis"></section>
+
+  <section class="section">
+    <h2>Dataset Comparison</h2>
+    <div class="tabs" id="tabs"></div>
+    <div id="panels"></div>
+    <div class="note">提示：MAE 越小越好；时长为日志起止时间估算；参数大小按 trainable_params*4 byte 估算。</div>
+  </section>
+
+  <section class="section">
+    <h2>Field Meaning</h2>
+    <table>
+      <tr><th>Field</th><th>Meaning</th></tr>
+      <tr><td>best_mae</td><td>最佳插补 MAE（来自 checkpoint 文件名）</td></tr>
+      <tr><td>duration_hours</td><td>近似训练时长（小时）</td></tr>
+      <tr><td>param_estimated_mb</td><td>模型参数大小估算（MB）</td></tr>
+      <tr><td>experiment_size_gb</td><td>该实验目录总占用空间（GB）</td></tr>
+      <tr><td>checkpoint_count</td><td>保存的 checkpoint 数量</td></tr>
+    </table>
+    <div class="footer">Generated at 2026-02-06 20:32:52</div>
+  </section>
+</div>
+
+<script>
+const data = [{"dataset": "DaQing", "run_name": "DaQing_SAITS_base", "model_type": "SAITS", "best_mae": 0.1095, "best_step": "189", "start_time": "2023-07-18 16:25:49", "end_time": "2023-07-18 16:49:26", "duration_hours": 0.394, "trainable_params": "1333464", "param_estimated_mb": 5.087, "checkpoint_avg_mb": 5.209, "checkpoint_count": 23, "experiment_size_gb": 0.117, "config_paths": "configs\\\\DaQing\\\\DaQing_SAITS_base.ini", "best_ckpt_path": "NIPS_results/DaQing_SAITS_base/models/2023_07_18_T16_25_49/model_trainStep_189_valStep_27_imputationMAE_0.1095"}, {"dataset": "DaQing", "run_name": "DaQing_BRITS_best", "model_type": "BRITS", "best_mae": 0.1104, "best_step": "196", "start_time": "2023-07-18 15:27:15", "end_time": "2023-07-18 15:55:37", "duration_hours": 0.473, "trainable_params": "159856", "param_estimated_mb": 0.61, "checkpoint_avg_mb": 0.622, "checkpoint_count": 30, "experiment_size_gb": 0.018, "config_paths": "configs\\\\DaQing\\\\DaQing_BRITS_best.ini", "best_ckpt_path": "NIPS_results/DaQing_BRITS_best/models/2023_07_18_T15_31_04/model_trainStep_196_valStep_28_imputationMAE_0.1104"}, {"dataset": "DaQing", "run_name": "DaQing_Transformer_best", "model_type": "Transformer", "best_mae": 0.123, "best_step": "189", "start_time": "2023-07-18 16:57:50", "end_time": "2023-07-18 17:34:56", "duration_hours": 0.618, "trainable_params": "13677578", "param_estimated_mb": 52.176, "checkpoint_avg_mb": 52.578, "checkpoint_count": 21, "experiment_size_gb": 1.078, "config_paths": "configs\\\\DaQing\\\\DaQing_Transformer_best.ini", "best_ckpt_path": "NIPS_results/DaQing_Transformer_best/models/2023_07_18_T16_58_30/model_trainStep_189_valStep_27_imputationMAE_0.1230"}, {"dataset": "DaQing", "run_name": "DaQing_SAITS_best", "model_type": "SAITS", "best_mae": 0.1318, "best_step": "182", "start_time": "2023-07-18 17:29:58", "end_time": "2023-07-18 18:40:51", "duration_hours": 1.181, "trainable_params": "8988120", "param_estimated_mb": 34.287, "checkpoint_avg_mb": 34.692, "checkpoint_count": 16, "experiment_size_gb": 0.542, "config_paths": "configs\\\\DaQing\\\\DaQing_SAITS_best.ini", "best_ckpt_path": "NIPS_results/DaQing_SAITS_best/models/2023_07_18_T17_29_58/model_trainStep_182_valStep_26_imputationMAE_0.1318"}, {"dataset": "DaQing", "run_name": "DaQing_MRNN_best", "model_type": "MRNN", "best_mae": 0.5901, "best_step": "196", "start_time": "2023-07-18 15:59:11", "end_time": "2023-07-18 16:23:49", "duration_hours": 0.411, "trainable_params": "10705326", "param_estimated_mb": 40.838, "checkpoint_avg_mb": 56.845, "checkpoint_count": 28, "experiment_size_gb": 1.554, "config_paths": "configs\\\\DaQing\\\\DaQing_MRNN_best.ini", "best_ckpt_path": "NIPS_results/DaQing_MRNN_best/models/2023_07_18_T15_59_11/model_trainStep_196_valStep_28_imputationMAE_0.5901"}, {"dataset": "NewZealand", "run_name": "NewZeaLand_BRITS_best", "model_type": "BRITS", "best_mae": 0.0643, "best_step": "1169", "start_time": "2023-07-19 10:19:16", "end_time": "2023-07-19 12:51:50", "duration_hours": 2.543, "trainable_params": "2261888", "param_estimated_mb": 8.628, "checkpoint_avg_mb": 8.643, "checkpoint_count": 78, "experiment_size_gb": 0.659, "config_paths": "configs/NewZeaLand/NewZealand_BRITS_best.ini", "best_ckpt_path": "NIPS_results/NewZeaLand_BRITS_best/models/2023_07_19_T10_19_16/model_trainStep_1169_valStep_167_imputationMAE_0.0643"}, {"dataset": "NewZealand", "run_name": "NewZeaLand_SAITS_base", "model_type": "SAITS", "best_mae": 0.0848, "best_step": "567", "start_time": "2023-07-19 14:52:04", "end_time": "2023-07-19 15:53:55", "duration_hours": 1.031, "trainable_params": "1341914", "param_estimated_mb": 5.119, "checkpoint_avg_mb": 5.241, "checkpoint_count": 48, "experiment_size_gb": 0.246, "config_paths": "configs/NewZeaLand/NewZealand_SAITS_base.ini", "best_ckpt_path": "NIPS_results/NewZeaLand_SAITS_base/models/2023_07_19_T14_52_04/model_trainStep_567_valStep_81_imputationMAE_0.0848"}, {"dataset": "NewZealand", "run_name": "NewZeaLand_Transformer_best", "model_type": "Transformer", "best_mae": 0.0948, "best_step": "644", "start_time": "2023-07-19 13:26:37", "end_time": "2023-07-19 14:52:01", "duration_hours": 1.423, "trainable_params": "13692943", "param_estimated_mb": 52.234, "checkpoint_avg_mb": 52.637, "checkpoint_count": 31, "experiment_size_gb": 1.594, "config_paths": "configs/NewZeaLand/NewZealand_Transformer_best.ini", "best_ckpt_path": "NIPS_results/NewZeaLand_Transformer_best/models/2023_07_19_T13_26_37/model_trainStep_644_valStep_92_imputationMAE_0.0948"}, {"dataset": "NewZealand", "run_name": "NewZeaLand_SAITS_best", "model_type": "SAITS", "best_mae": 0.1204, "best_step": "224", "start_time": "2023-07-19 15:53:58", "end_time": "2023-07-19 16:27:40", "duration_hours": 0.562, "trainable_params": "9019610", "param_estimated_mb": 34.407, "checkpoint_avg_mb": 34.812, "checkpoint_count": 20, "experiment_size_gb": 0.68, "config_paths": "configs/NewZeaLand/NewZealand_SAITS_best.ini", "best_ckpt_path": "NIPS_results/NewZeaLand_SAITS_best/models/2023_07_19_T15_53_58/model_trainStep_224_valStep_32_imputationMAE_0.1204"}, {"dataset": "NewZealand", "run_name": "NewZeaLand_MRNN_best", "model_type": "MRNN", "best_mae": 0.4471, "best_step": "217", "start_time": "2023-07-19 12:51:54", "end_time": "2023-07-19 13:26:33", "duration_hours": 0.578, "trainable_params": "10808241", "param_estimated_mb": 41.23, "checkpoint_avg_mb": 57.238, "checkpoint_count": 27, "experiment_size_gb": 1.509, "config_paths": "configs/NewZeaLand/NewZealand_MRNN_best.ini", "best_ckpt_path": "NIPS_results/NewZeaLand_MRNN_best/models/2023_07_19_T12_51_54/model_trainStep_217_valStep_31_imputationMAE_0.4471"}, {"dataset": "NorthSea", "run_name": "NorthSea_BRITS_best", "model_type": "BRITS", "best_mae": 0.0566, "best_step": "798", "start_time": "2023-07-18 19:08:15", "end_time": "2023-07-18 19:44:00", "duration_hours": 0.596, "trainable_params": "2261888", "param_estimated_mb": 8.628, "checkpoint_avg_mb": 8.642, "checkpoint_count": 66, "experiment_size_gb": 0.557, "config_paths": ".\\\\configs\\\\NorthSea\\\\NorthSea_BRITS_best.ini", "best_ckpt_path": "NIPS_results/NorthSea_BRITS_best/models/2023_07_18_T19_08_15/model_trainStep_798_valStep_114_imputationMAE_0.0566"}, {"dataset": "NorthSea", "run_name": "NorthSea_SAITS_base", "model_type": "SAITS", "best_mae": 0.0771, "best_step": "812", "start_time": "2023-07-18 21:07:09", "end_time": "2023-07-18 21:35:59", "duration_hours": 0.481, "trainable_params": "1341914", "param_estimated_mb": 5.119, "checkpoint_avg_mb": 5.241, "checkpoint_count": 51, "experiment_size_gb": 0.261, "config_paths": ".\\\\configs\\\\NorthSea\\\\NorthSea_SAITS_base.ini", "best_ckpt_path": "NIPS_results/NorthSea_SAITS_base/models/2023_07_18_T21_07_09/model_trainStep_812_valStep_116_imputationMAE_0.0771"}, {"dataset": "NorthSea", "run_name": "NorthSea__SAITS_best", "model_type": "SAITS", "best_mae": 0.1011, "best_step": "476", "start_time": "2023-07-19 09:44:44", "end_time": "2023-07-19 10:06:04", "duration_hours": 0.356, "trainable_params": "9019610", "param_estimated_mb": 34.407, "checkpoint_avg_mb": 34.812, "checkpoint_count": 29, "experiment_size_gb": 0.986, "config_paths": ".\\\\configs\\\\NorthSea\\\\NorthSea_SAITS_best.ini", "best_ckpt_path": "NIPS_results/NorthSea__SAITS_best/models/2023_07_19_T09_44_44/model_trainStep_476_valStep_68_imputationMAE_0.1011"}, {"dataset": "NorthSea", "run_name": "NorthSea_Transformer_best", "model_type": "Transformer", "best_mae": 0.1148, "best_step": "287", "start_time": "2023-07-18 20:44:44", "end_time": "2023-07-18 20:59:39", "duration_hours": 0.249, "trainable_params": "13692943", "param_estimated_mb": 52.234, "checkpoint_avg_mb": 52.637, "checkpoint_count": 24, "experiment_size_gb": 1.234, "config_paths": ".\\\\configs\\\\NorthSea\\\\NorthSea_Transformer_best.ini", "best_ckpt_path": "NIPS_results/NorthSea_Transformer_best/models/2023_07_18_T20_44_44/model_trainStep_287_valStep_41_imputationMAE_0.1148"}, {"dataset": "NorthSea", "run_name": "NorthSea_MRNN_best", "model_type": "MRNN", "best_mae": 0.4394, "best_step": "119", "start_time": "2023-07-18 20:05:39", "end_time": "2023-07-18 20:25:23", "duration_hours": 0.329, "trainable_params": "10808241", "param_estimated_mb": 41.23, "checkpoint_avg_mb": 57.238, "checkpoint_count": 17, "experiment_size_gb": 0.95, "config_paths": ".\\\\configs\\\\NorthSea\\\\NorthSea_MRNN_best.ini", "best_ckpt_path": "NIPS_results/NorthSea_MRNN_best/models/2023_07_18_T20_05_39/model_trainStep_119_valStep_17_imputationMAE_0.4394"}];
+const order = ["DaQing","NewZealand","NorthSea"];
+
+function groupByDataset() {
+  const m = {};
+  order.forEach(d => m[d] = []);
+  data.forEach(r => { if (m[r.dataset]) m[r.dataset].push(r); });
+  order.forEach(d => m[d].sort((a,b)=>(a.best_mae ?? 1e9) - (b.best_mae ?? 1e9)));
+  return m;
+}
+
+const grouped = groupByDataset();
+
+function minMax(arr, key) {
+  const vals = arr.map(x => x[key]).filter(v => typeof v === 'number' && !Number.isNaN(v));
+  if (!vals.length) return [0,1];
+  return [Math.min(...vals), Math.max(...vals)];
+}
+
+function scoreInv(v, min, max) {
+  if (typeof v !== 'number') return 0;
+  if (max === min) return 100;
+  const x = (v - min) / (max - min);
+  return Math.max(0, Math.min(100, (1-x)*100));
+}
+
+function bar(value) {
+  return `<div class="bar"><div class="fill ${value.cls}" style="width:${value.w.toFixed(1)}%"></div></div>`;
+}
+
+const allRuns = data.length;
+const totalSize = data.reduce((s,x)=>s+(x.experiment_size_gb||0),0);
+const best = [...data].sort((a,b)=>(a.best_mae??1e9)-(b.best_mae??1e9))[0];
+const avgDur = data.reduce((s,x)=>s+(x.duration_hours||0),0) / Math.max(allRuns,1);
+
+document.getElementById('kpis').innerHTML = `
+  <div class="card"><div class="k">实验数</div><div class="v">${allRuns}</div></div>
+  <div class="card"><div class="k">总占用空间</div><div class="v">${totalSize.toFixed(2)} GB</div></div>
+  <div class="card"><div class="k">全局最佳 MAE</div><div class="v">${best.best_mae.toFixed(4)}</div><div class="k">${best.dataset} - ${best.model_type}</div></div>
+  <div class="card"><div class="k">平均训练时长</div><div class="v">${avgDur.toFixed(2)} h</div></div>
+`;
+
+const tabs = document.getElementById('tabs');
+const panels = document.getElementById('panels');
+
+order.forEach((ds, idx) => {
+  const rows = grouped[ds];
+  if (!rows || !rows.length) return;
+
+  const tab = document.createElement('button');
+  tab.className = 'tab' + (idx===0?' active':'');
+  tab.textContent = ds;
+  tab.dataset.target = `panel-${ds}`;
+  tabs.appendChild(tab);
+
+  const [maeMin, maeMax] = minMax(rows, 'best_mae');
+  const [durMin, durMax] = minMax(rows, 'duration_hours');
+  const [sizMin, sizMax] = minMax(rows, 'param_estimated_mb');
+
+  const bestMae = rows[0];
+  const fastest = [...rows].sort((a,b)=>(a.duration_hours??1e9)-(b.duration_hours??1e9))[0];
+  const smallest = [...rows].sort((a,b)=>(a.param_estimated_mb??1e9)-(b.param_estimated_mb??1e9))[0];
+
+  const p = document.createElement('div');
+  p.className = 'dataset-panel' + (idx===0?' active':'');
+  p.id = `panel-${ds}`;
+
+  const trs = rows.map((r, i) => `
+    <tr>
+      <td class="rank">${i+1}</td>
+      <td>${r.model_type}</td>
+      <td>${r.best_mae.toFixed(4)}</td>
+      <td>${bar({cls:'mae', w:scoreInv(r.best_mae, maeMin, maeMax)})}</td>
+      <td>${(r.duration_hours ?? 0).toFixed(2)}</td>
+      <td>${bar({cls:'time', w:scoreInv(r.duration_hours, durMin, durMax)})}</td>
+      <td>${(r.param_estimated_mb ?? 0).toFixed(2)}</td>
+      <td>${bar({cls:'size', w:scoreInv(r.param_estimated_mb, sizMin, sizMax)})}</td>
+      <td>${(r.experiment_size_gb ?? 0).toFixed(3)}</td>
+      <td>${r.checkpoint_count}</td>
+      <td>${r.run_name}</td>
+    </tr>
+  `).join('');
+
+  p.innerHTML = `
+    <div class="quick">
+      <div class="q"><div class="t">最佳 MAE</div><div class="n">${bestMae.model_type} (${bestMae.best_mae.toFixed(4)})</div></div>
+      <div class="q"><div class="t">最快训练</div><div class="n">${fastest.model_type} (${(fastest.duration_hours ?? 0).toFixed(2)} h)</div></div>
+      <div class="q"><div class="t">最小参数</div><div class="n">${smallest.model_type} (${(smallest.param_estimated_mb ?? 0).toFixed(2)} MB)</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th><th>Model</th><th>MAE</th><th>MAE Bar</th>
+            <th>Duration(h)</th><th>Time Bar</th>
+            <th>Param(MB)</th><th>Size Bar</th>
+            <th>Run GB</th><th>CKPT</th><th>Run Name</th>
+          </tr>
+        </thead>
+        <tbody>${trs}</tbody>
+      </table>
+    </div>
+    <div class="legend">`Bar` 越长表示越优（MAE 更低、时间更短、参数更小）</div>
+  `;
+
+  panels.appendChild(p);
+});
+
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.dataset-panel').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    const target = document.getElementById(btn.dataset.target);
+    if (target) target.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

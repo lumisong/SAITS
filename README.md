@@ -131,6 +131,13 @@ We give configurations of our models in dir [`configs`](https://github.com/Wenji
 the dataset links and preprocessing scripts in dir [`dataset_generating_scripts`](https://github.com/WenjieDu/SAITS/tree/main/dataset_generating_scripts).
 Dir [`NNI_tuning`](https://github.com/WenjieDu/SAITS/tree/main/NNI_tuning) contains the hyper-parameter searching configurations.
 
+## ❖ Local Workspace Navigation (This Machine)
+If you are using this repository under `Libraries/SAITS`, these files help quickly locate everything:
+
+- `WORKSPACE_STRUCTURE.md`: local folder map (code/data/results/reports).
+- `REPORTS.md`: quick entry for generated analysis reports.
+- `reports/`: organized report packages (for example oil-dataset experiment summaries and dashboard).
+
 
 ## ❖ Development Environment
 All dependencies of our development environment are listed in file [`conda_env_dependencies.yml`](https://github.com/WenjieDu/SAITS/blob/main/conda_env_dependencies.yml).
